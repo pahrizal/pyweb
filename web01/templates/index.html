@@ -1,0 +1,90 @@
+<title>TES</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+<link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 ">
+        <div class="card badge-info-lighten">
+            <h4 class="text-center">
+                <img src="assets/images/cloud.png" height="128px"/>
+            </h4>
+            <div class="card-body">
+                <h5 class="text-center">
+                    SIGN IN TO ROUTER OS
+                </h5>
+                <form id="form-login" action="/login">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input required
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Masukkan username"
+                            class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input required
+                            type="password" 
+                            id="password"
+                            placeholder="masukkan password"
+                            name="password"
+                            class="form-control"/>
+                    </div>
+                    <div class="form-group text-right">
+                        <button
+                            id="tombol-login"
+                            class="btn btn-info"
+                            type="submit">
+                            Let me in!
+                        </button>
+                    </div>
+                    <div id="pesan-error" class="text-danger text-center">
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer footer-alt">
+    UNIVERSITAS BUMIGORA - 2019
+</footer>
+<script src="assets/js/app.min.js"></script>
+<script>
+    $(function(){
+        $('#form-login').on('submit', function(e){
+            //cegah form submit data ke backend
+            e.preventDefault();
+            //disable semua element input
+            $('input').attr('disabled',true);
+            //disable tombol login
+            $('#tombol-login').attr('disabled',true);
+            //ganti text tombol login
+            $('#tombol-login').html('Please wait...');
+            //proses login 
+            data = {
+                username: $('#username').val(),
+                password: $('#password').val(),
+            }
+            $.getJSON('/login', data, function(res){
+                //{state: true, message: 'Login berhasil'}
+                //{state: false, message: 'Login gagal'}
+                //enable kembali tombol login
+                $('#tombol-login').removeAttr('disabled');
+                //enable element input
+                $('input').removeAttr('disabled');
+                //text tombol login
+                $('#tombol-login').html('Let me In!');
+                if(res.state){
+                    window.location= '/home'
+                }else{
+                    //login gagal
+                    //tampilkan pesan
+                    $('#pesan-error').html(res.message)
+                }
+            })
+        })
+    })
+</script>

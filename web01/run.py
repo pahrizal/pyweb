@@ -30,6 +30,8 @@ def login():
             api = koneksi.get_api()
             output = {'state': True, 'message': 'Login berhasil'}
             session['logedin']=True
+            session['username']= username 
+            session['password']= password
         except:
             output = {'state': False, 'message': 'Login gagal! Username/password salah'}
     else:
@@ -39,7 +41,12 @@ def login():
 @app.route("/home")
 def home():
     if session['logedin']==True:
-        return render_template("home.html")
+        koneksi = routeros_api.RouterOsApiPool('192.168.1.100', 
+                  username=session['username'], password=session['password'])
+        api = koneksi.get_api()
+        #ambil data user yang ada di router
+        ip = api.get_resource("/ip/address").get()
+        return render_template("home.html", data = ip)
     else:
         return render_template("index.html")
 
